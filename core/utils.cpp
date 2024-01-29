@@ -42,6 +42,11 @@ static const char *device_iio_sf_filename = "sampling_frequency";
 static const char *device_iio_hw_fifo_enabled = "hwfifo_enabled";
 static const char *device_iio_hw_fifo_length = "hwfifo_watermark_max";
 static const char *device_iio_hw_fifo_watermark = "hwfifo_watermark";
+
+static const char *device_iio_buffer_hw_fifo_enabled = "buffer/hwfifo_enabled";
+static const char *device_iio_buffer_hw_fifo_length = "buffer/hwfifo_watermark_max";
+static const char *device_iio_buffer_hw_fifo_watermark = "buffer/hwfifo_watermark";
+
 static const char *device_iio_max_delivery_rate_filename = "max_delivery_rate";
 static const char *device_iio_hw_fifo_flush = "hwfifo_flush";
 static const char *device_iio_buffer_enable = "buffer/enable";
@@ -615,6 +620,16 @@ int device_iio_utils::get_hw_fifo_length(const char *device_dir)
         return 0;
     }
 
+    ret = check_file(tmp_filaname);
+    if (ret < 0 && errno == ENOENT) {
+        /* read <iio:devicex>/buffer/hwfifo_watermark_max */
+        ret = snprintf(tmp_filaname, DEVICE_IIO_MAX_FILENAME_LEN,
+                       "%s/%s", device_dir, device_iio_buffer_hw_fifo_length);
+        if (ret < 0) {
+            return 0;
+        }
+    }
+
     ret = sysfs_read_int(tmp_filaname, &len);
     if (ret < 0 || len <= 0) {
         return 0;
@@ -642,7 +657,17 @@ int device_iio_utils::get_hw_fifo_length(const char *device_dir)
     /* used for compatibility with old iio API */
     ret = check_file(tmp_filaname);
     if (ret < 0 && errno == ENOENT) {
-        goto out;
+        /* read <iio:devicex>/buffer/hwfifo_enabled */
+        ret = snprintf(tmp_filaname, DEVICE_IIO_MAX_FILENAME_LEN,
+                       "%s/%s", device_dir, device_iio_buffer_hw_fifo_enabled);
+        if (ret < 0) {
+            return 0;
+        }
+
+        ret = check_file(tmp_filaname);
+        if (ret < 0 && errno == ENOENT) {
+            goto out;
+        }
     }
 
     ret = sysfs_write_int(tmp_filaname, 1);
@@ -714,7 +739,17 @@ int device_iio_utils::set_hw_fifo_watermark(char *device_dir,
     /* it's ok if file not exists */
     ret = check_file(tmp_filaname);
     if (ret < 0 && errno == ENOENT) {
-        return 0;
+        /* read <iio:devicex>/buffer/hwfifo_watermark */
+        ret = snprintf(tmp_filaname, DEVICE_IIO_MAX_FILENAME_LEN,
+                       "%s/%s", device_dir, device_iio_buffer_hw_fifo_watermark);
+        if (ret < 0) {
+            return 0;
+        }
+
+        ret = check_file(tmp_filaname);
+        if (ret < 0 && errno == ENOENT) {
+            return 0;
+        }
     }
 
     return sysfs_write_int(tmp_filaname, watermark);
