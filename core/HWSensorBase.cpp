@@ -1005,7 +1005,9 @@ int HWSensorBaseWithPollrate::flushRequest(int handle, bool lock_en_mutex)
 
         if (sensor_t_data.fifoMaxEventCount) {
             err = device_iio_utils::hw_fifo_flush(common_data.device_iio_sysfs_path);
-            if (err < 0) {
+            if (err == -ENOENT) {
+                ProcessFlushData(sensor_t_data.handle, 0);
+            } else if (err < 0) {
                 // TODO should remove the flush requests just added
                 console.error(GetName() + std::string(": Failed to flush hw fifo."));
                 goto unlock_mutex;

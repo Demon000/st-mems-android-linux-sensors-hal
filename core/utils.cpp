@@ -770,7 +770,9 @@ int device_iio_utils::hw_fifo_flush(char *device_dir)
     /* it's ok if file not exists */
     ret = check_file(tmp_filaname);
     if (ret < 0 && errno == ENOENT) {
-        return 0;
+        return -ENOENT;
+    } else if (ret < 0) {
+        return ret;
     }
 
     return sysfs_write_int(tmp_filaname, 1);
