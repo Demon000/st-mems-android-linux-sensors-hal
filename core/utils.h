@@ -87,7 +87,7 @@ private:
     static int sysfs_opendir(const char *name, DIR **dp);
     static int sysfs_write_int(char *file, int val);
     static int sysfs_write_uint(char *file, unsigned int val);
-    static int sysfs_write_str(char *file, char *str);
+    static int sysfs_write_str(char *file, const char *str);
     static int sysfs_write_float(char *file, float val);
     static int sysfs_read_int(char *file, int *val);
     static int sysfs_read_uint(char *file, unsigned int *val);

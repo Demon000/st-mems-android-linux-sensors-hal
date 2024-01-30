@@ -138,7 +138,7 @@ int device_iio_utils::sysfs_write_float(char *file, float val)
     return 0;
 }
 
-int device_iio_utils::sysfs_write_str(char *file, char *str)
+int device_iio_utils::sysfs_write_str(char *file, const char *str)
 {
     FILE *fp;
 
