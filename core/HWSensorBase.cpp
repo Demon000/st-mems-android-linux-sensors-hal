@@ -913,7 +913,7 @@ int HWSensorBaseWithPollrate::SetDelay(int handle, int64_t period_ns,
 
     if (current_min_pollrate != min_pollrate_ns) {
         err = device_iio_utils::set_sampling_frequency(common_data.device_iio_sysfs_path,
-                                                       sampling_frequency_available.freq[i]);
+                                                       sampling_frequency_available.freq_string[i]);
         if (err < 0) {
             console.error(GetName() + std::string(": Failed to write sampling frequency to iio device."));
             goto mutex_unlock;

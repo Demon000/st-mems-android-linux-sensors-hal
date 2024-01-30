@@ -597,6 +597,7 @@ int device_iio_utils::get_sampling_frequency_available(const char *device_dir,
     pch = strtok(line," ,");
     while (pch != NULL) {
         sfa->freq[sfa->length] = atof(pch);
+        sfa->freq_string[sfa->length] = std::string(pch);
         pch = strtok(NULL, " ,");
         sfa->length++;
         if (sfa->length >= DEVICE_IIO_MAX_SAMP_FREQ_AVAILABLE) {
@@ -680,7 +681,7 @@ out:
 }
 
 int device_iio_utils::set_sampling_frequency(char *device_dir,
-                                             unsigned int frequency)
+                                             std::string frequency)
 {
     int ret;
     char tmp_filaname[DEVICE_IIO_MAX_FILENAME_LEN];
@@ -698,7 +699,7 @@ int device_iio_utils::set_sampling_frequency(char *device_dir,
         return 0;
     }
 
-    return sysfs_write_int(tmp_filaname, frequency);
+    return sysfs_write_str(tmp_filaname, frequency.c_str());
 }
 
 int device_iio_utils::set_max_delivery_rate(const char *device_dir,

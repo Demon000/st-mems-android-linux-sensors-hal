@@ -51,6 +51,7 @@ struct device_iio_scales {
 
 struct device_iio_sampling_freqs {
     float freq[DEVICE_IIO_MAX_SAMP_FREQ_AVAILABLE];
+    std::string freq_string[DEVICE_IIO_MAX_SAMP_FREQ_AVAILABLE];
     unsigned int length;
 };
 
@@ -102,7 +103,7 @@ public:
     static int enable_sensor(const char *device_dir, bool enable);
     static int get_sampling_frequency_available(const char *device_dir, struct device_iio_sampling_freqs *sfa);
     static int get_hw_fifo_length(const char *device_dir);
-    static int set_sampling_frequency(char *device_dir, unsigned int frequency);
+    static int set_sampling_frequency(char *device_dir, std::string frequency);
     static int set_max_delivery_rate(const char *device_dir, unsigned int delay);
     static int set_hw_fifo_watermark(char *device_dir, unsigned int watermark);
     static int hw_fifo_flush(char *device_dir);
