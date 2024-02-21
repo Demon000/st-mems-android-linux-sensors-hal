@@ -562,6 +562,12 @@ int device_iio_utils::enable_sensor(const char *device_dir, bool enable)
     char enable_file[DEVICE_IIO_MAX_FILENAME_LEN + 1];
     int err;
 
+    err = enable_events(device_dir, enable);
+    if (err < 0) {
+        console.error(std::string("Failed to enable events: ") + std::to_string(err));
+        return err;
+    }
+
     err = check_file(device_dir);
     if (!err) {
         sprintf(enable_file, "%s/%s", device_dir, device_iio_buffer_enable);
@@ -571,7 +577,7 @@ int device_iio_utils::enable_sensor(const char *device_dir, bool enable)
         return err;
     }
 
-    return enable_events(device_dir, enable);
+    return 0;
 }
 
 int device_iio_utils::get_sampling_frequency_available(const char *device_dir,
